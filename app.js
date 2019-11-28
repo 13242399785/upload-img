@@ -39,7 +39,8 @@ var upload = multer({ storage: storage })
 
 app.post('/upload',upload.array('logo',20),function(req,res,next){
 	console.log(req.files)
-	res.end(JSON.stringify(req.files))
+    res.send(JSON.stringify(req.files))
+	// res.end(JSON.stringify(req.files))
 })
 // app.get('form',function(req,res,next){
 // 	var form=fs.readFileSync('./form.html',{encoding:'utf-8'})
