@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>node.js读取本地json</title>
+</head>
+	<body>
+		<div class="web">
+			<ul id="list">
+			</ul>
+		</div>
+	    <h2>当你访问主页的时候，异步加载就开始了，请打开控制台查看</h2>
+	    <script>
+	        var xhr = new XMLHttpRequest();
+	        var list=[],i;
+	        var text=document.getElementById("list");
+	        var box=[];
+	        console.log(text)
+	        console.log(xhr)
+	        xhr.open("get", "/extension.json");
+	        xhr.onload = function(){
+	            // console.log(xhr.responseText);
+	            list=xhr.responseText;
+
+	            length=JSON.parse(list).length;
+	            console.log(list)
+	            console.log(length)
+	            for(i=0;i<length;i++){
+	            	console.log("111")
+	            	text.innerHTML+="<li>"+JSON.parse(list)[i]+"</li>"
+	            }
+	            console.log(JSON.parse(list))
+	        }
+	        xhr.send(null);
+	        setTimeout(function(){
+	        	box=JSON.parse(list);
+	        	console.log(text.children[0])
+	        	for(let j=0;j<box.length;j++){
+	        		text.children[j].addEventListener("click",function(){
+	        			console.log(text.children[j].innerHTML)
+	        		})
+	        	}
+	        },100)
+	    </script>
+	</body>
+</html>

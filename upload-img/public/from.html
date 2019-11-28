@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>提交图片</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style type="text/css">
+    	html,body,.web{height: 100%;}
+    	.file-wapper{
+    	background: url('./add.png') no-repeat 100% 100%;width: 100px;height: 100px;display: inline-block;
+    	background-position: 0 0;
+	    background-repeat: no-repeat;
+	    background-size: 100% 100%;
+    }
+    .imglist{height: 300px;font-size: 0;}
+    .img{position: relative;width: 25%;height: 100px;overflow: hidden;display: inline-block;}
+    .img span{position: absolute;top: 0;right: 0;border-radius: 50%;border: 1px solid #ccc;font-size:16px;}
+    .imglist img{height: 100%;max-width:100%;}
+    .upfile{width: 100px;height: 100px;opacity: 0;}     
+    </style>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+	<body>
+		<div class="web">
+			{{messge}}
+			<ul id="list">
+			</ul>
+			<form action="/upload" method="post" enctype="multipart/form-data">
+			    <h2>上传</h2>
+			    <div class="imglist" v-show='imglist.length>0'>
+			    	<div class="img" v-for='(item,index) in imglist' :key='index'>
+			    		<img :src="item">
+			    		<span @click='delectImg(index)'>删除</span>
+			    	</div>	
+			    </div>	
+			    <div class="file-wapper">
+			    	<input  multiple='multiple' type="file" name="logo" @change='uploadFile($event)' class="upfile" v-show='imglist.length==0'>	
+
+			    	<input type="file" name="logo" @change='uploadFile($event)' class="upfile" v-for='(file,index1) in imglist' :key='index1' v-show='imglist.length==(index1+1)' multiple='multiple'>
+			    </div>			    		    
+			    <button @click.prevent='commit'>提交</button> 
+			</form>
+		</div>
+	    <script>	
+	    var str = "123"
+console.log(str.indexOf("122") ); 		    	
+	    	var web=new Vue({
+	    		el:'.web',
+	    		data:{
+	    			messge:'ceshi ',
+	    			imgsrc:'',
+	    			imglist:[]
+	    		},
+	    		methods:{
+	    			//上传按钮
+	    			uploadFile(e){  
+	    				let me=this;
+	    				console.log(e.target.files)
+	    				let files=e.target.files;
+	    				let file=e.target.files[0]
+	    				console.log(file.name)
+	    				var imgStr = /\.(jpg|jpeg|png|bmp|BMP|JPG|PNG|JPEG|GIF|gif)$/;
+
+	    				if(!imgStr.test(file.name)){
+	    					alert('当前只允许上传图片文件')
+	    				}else{
+	    					console.log('图片上传')
+	    					for (let i = 0; i < files.length; i++){
+	    						console.log(111)
+						        me.mockimg(files[i])
+						    }
+	    				}	
+	    				
+	    			},
+	    			//多图片判断循环
+	    			mockimg(file){
+	    				let me=this;
+	    				var reader = new FileReader();
+	    				//读取文件过程方法
+		                reader.onloadstart = function (e) {
+		                    console.log("开始读取....");
+		                }
+		                reader.onprogress = function (e) {
+		                    console.log("正在读取中....");
+		                }
+		                reader.onabort = function (e) {
+		                    console.log("中断读取....");
+		                }
+		                reader.onerror = function (e) {
+		                    console.log("读取异常....");
+		                }
+		                reader.onload = function (e) {
+		                    console.log("成功读取....");
+		                    me.imglist.push(e.target.result)
+		                    // return e.target.result
+		                    // me.imgsrc = e.target.result;
+		                    //或者 img.src = this.result;  //e.target == this
+		                }
+	    				reader.readAsDataURL(file)
+	    			},
+	    			//删除图片
+	    			delectImg(i){
+	    				console.log(this.imglist)
+	    				this.imglist.splice(i,1)
+	    				console.log(i)
+	    			},
+	    			//提交
+	    			commit(){
+	    				if(this.imglist.length==0){
+	    					alert('请选择图片上传！')
+	    				}else{
+	    					axios.post('/upload').then(res=>{
+	    						console.log(res)
+	    					})
+	    				}
+	    				console.log(axios)
+	    				axios.get(`http://192.168.5.180:5025/api/DeviceType`).then(res=>{
+	    					console.log(res)
+	    				});
+	    			}
+	    		},
+
+
+	    	})
+	    </script>
+	</body>
+</html>
