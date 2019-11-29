@@ -13,24 +13,25 @@
 	    background-repeat: no-repeat;
 	    background-size: 100% 100%;
     }
-    .imglist{height: 300px;font-size: 0;}
+    .imglist{font-size: 0;}
     .img{position: relative;width: 25%;height: 100px;overflow: hidden;display: inline-block;}
-    .img span{position: absolute;top: 0;right: 0;border-radius: 50%;border: 1px solid #ccc;font-size:16px;}
+    .img span{position: absolute;top: 0;right: 0;border-radius: 50%;border: 1px solid #ccc;font-size:14px;width: 30px;height: 30px;background: #1296db;line-height: 30px;text-align: center;}
     .imglist img{height: 100%;max-width:100%;}
-    .upfile{width: 100px;height: 100px;opacity: 0;}     
+    .upfile{width: 100px;height: 100px;opacity: 0;} 
+    .img-wapper{position: fixed;width: 100%;height:100%;left: 50%;top: 50%;transform: translate(-50%,-50%);background: rgba(0,0,0,.2)}  
+    .img-wapper img{width: 100%;}
+    .img-content{position: fixed;width: 80%;height:auto;left: 50%;top: 50%;transform: translate(-50%,-50%);max-width: 500px;}
+    form{height: auto;}
     </style>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 	<body>
 		<div class="web">
-			{{messge}}
-			<ul id="list">
-			</ul>
-			<form action="/upload" method="post" enctype="multipart/form-data" ref="uploadimg">
+			<form action="/upload" @submit="doSubmit"  method="post" enctype="multipart/form-data" ref="uploadimg">
 			    <h2>上传</h2>
 			    <div class="imglist" v-show='imglist.length>0'>
 			    	<div class="img" v-for='(item,index) in imglist' :key='index'>
-			    		<img :src="item">
+			    		<img :src="item" @click='choseImg(item)'>
 			    		<span @click='delectImg(index)'>删除</span>
 			    	</div>	
 			    </div>	
@@ -41,18 +42,33 @@
 			    </div>			    		    
 			   	<input type="submit" @click.prevent='commit' value="提交">
 			</form>
+			<div class="img-wapper" v-show='mock' @click='mockHiden'>
+				<div class="img-content">
+					<img :src="mockImg" @click.stop=''>
+				</div>	
+			</div>
 		</div>
-	    <script>	
-	    var str = "123"
-console.log(str.indexOf("122") ); 		    	
+	    <script>		    	
 	    	var web=new Vue({
 	    		el:'.web',
 	    		data:{
 	    			messge:'ceshi ',
 	    			imgsrc:'',
-	    			imglist:[]
+	    			imglist:[],
+	    			mockImg:'',
+	    			mock:false,
 	    		},
 	    		methods:{
+	    			choseImg(img){
+	    				this.mock=true;
+	    				this.mockImg=img;
+	    			},
+	    			mockHiden(){
+	    				this.mock=false;
+	    			},
+	    			maopao(){
+	    				console.log(222)
+	    			},
 	    			//上传按钮
 	    			uploadFile(e){  
 	    				let me=this;
@@ -103,6 +119,9 @@ console.log(str.indexOf("122") );
 	    			delectImg(i){
 	    				console.log(this.imglist)
 	    				this.imglist.splice(i,1);//去掉
+	    			},
+	    			doSubmit(){
+	    				return false;
 	    			},
 	    			//提交
 	    			commit(n,e){

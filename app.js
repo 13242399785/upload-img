@@ -15,7 +15,7 @@ var createFolder = function(folder){
     }  
 };
 var uploadFolder = './upload/';
-createFolder(uploadFolder);
+createFolder(uploadFolder);//创建文件保存路径
 
 // 通过 filename 属性定制
 var storage = multer.diskStorage({
